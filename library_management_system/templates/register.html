@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block auth %}<div class="auth"><div class="container"><div class="card p-4 mx-auto" style="max-width:420px">
+<h4 class="text-center mb-3" style="color:var(--navy)"><i class="fa fa-book-open-reader"></i> Student Registration</h4>
+{% for c,m in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ c }}">{{ m }}</div>{% endfor %}
+<form method="post"><input class="form-control mb-2" name="name" placeholder="Full name" required><input class="form-control mb-2" name="email" type="email" placeholder="Email" required><input class="form-control mb-2" name="roll_no" placeholder="Roll number" required><input class="form-control mb-2" name="department" placeholder="Department"><input class="form-control mb-2" name="password" type="password" placeholder="Password (min 6)" required><button class="btn btn-primary w-100 mt-2">Student Registration</button></form>
+<p class="text-center mt-3 mb-0 small"><a href="{{ url_for('login') }}">Back to login</a></p></div></div></div>{% endblock %}

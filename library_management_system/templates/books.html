@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% block content %}
+<div class="d-flex justify-content-between mb-3"><form class="d-flex gap-2"><input class="form-control" name="q" value="{{q}}" placeholder="Title, author or ISBN">
+<select class="form-select" name="category"><option value="">All categories</option>{% for x in cats %}<option {{'selected' if x==c}}>{{x}}</option>{% endfor %}</select><button class="btn btn-primary"><i class="fa fa-search"></i></button></form>
+{% if user.role=='admin' %}<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#bm" onclick="fill({})"><i class="fa fa-plus"></i> Add Book</button>{% endif %}</div>
+<div class="card p-3"><table class="table align-middle"><tr><th>Title</th><th>Author</th><th>ISBN</th><th>Category</th><th>Available</th><th></th></tr>
+{% for b in books %}<tr><td>{{b.title}}</td><td>{{b.author}}</td><td>{{b.isbn}}</td><td>{{b.category}}</td><td>{{b.available}}/{{b.quantity}}</td><td class="text-end">
+{% if user.role=='admin' %}<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bm" onclick='fill({{ dict(b)|tojson }})'><i class="fa fa-pen"></i></button>
+<form class="d-inline" method="post" action="{{ url_for('delete_book',bid=b.id) }}" onsubmit="return confirm('Delete this book?')"><button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button></form>
+{% else %}<form method="post" action="{{ url_for('borrow',bid=b.id) }}"><button class="btn btn-sm btn-primary" {{'disabled' if b.available<1}}>Borrow</button></form>{% endif %}</td></tr>{% endfor %}</table></div>
+{% if user.role=='admin' %}<div class="modal fade" id="bm"><div class="modal-dialog"><form class="modal-content p-3" method="post" action="{{ url_for('save_book') }}"><input type="hidden" name="id" id="f_id">
+<h5>Book Details</h5>{% for n in ['title','author','isbn','category'] %}<input class="form-control mb-2" name="{{n}}" id="f_{{n}}" placeholder="{{n|title}}" required>{% endfor %}
+<input class="form-control mb-2" type="number" min="0" name="quantity" id="f_quantity" placeholder="Quantity" required><button class="btn btn-primary">Save</button></form></div></div>
+<script>function fill(b){['id','title','author','isbn','category','quantity'].forEach(k=>document.getElementById('f_'+k).value=b[k]??'')}</script>{% endif %}
+{% endblock %}

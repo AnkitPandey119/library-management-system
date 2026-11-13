@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LibraryHub</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet"></head><body>
+{% if user %}
+<div class="sidebar"><h5 class="text-white p-3 mb-0"><i class="fa fa-book-open-reader"></i> LibraryHub</h5>
+<a href="{{ url_for('dashboard') }}"><i class="fa fa-gauge me-2"></i>Dashboard</a>
+<a href="{{ url_for('books') }}"><i class="fa fa-book me-2"></i>Books</a>
+<a href="{{ url_for('transactions') }}"><i class="fa fa-right-left me-2"></i>{{ 'Transactions & Reports' if user.role=='admin' else 'My Borrowings' }}</a>
+{% if user.role=='admin' %}<a href="{{ url_for('students') }}"><i class="fa fa-users me-2"></i>Students</a>{% endif %}
+<a href="{{ url_for('logout') }}"><i class="fa fa-right-from-bracket me-2"></i>Logout</a></div>
+<div class="main"><div class="topbar p-3 d-flex justify-content-between"><strong>Welcome, {{ user.name }}</strong><span class="badge bg-info text-dark">{{ user.role|title }}</span></div>
+<div class="p-4">
+{% for c,m in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ c }} alert-dismissible fade show">{{ m }}<button class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+{% block content %}{% endblock %}</div></div>
+{% else %}{% block auth %}{% endblock %}{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script></body></html>

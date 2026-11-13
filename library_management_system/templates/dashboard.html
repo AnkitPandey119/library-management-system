@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block content %}
+{% if stats %}<div class="row g-3 mb-4">
+{% for l,k,i in [('Total Books','total','book'),('Available','available','check'),('Issued','issued','arrow-right-arrow-left'),('Students','students','users'),('Overdue','overdue','clock')] %}
+<div class="col-6 col-lg"><div class="card stat p-3"><i class="fa fa-{{i}}"></i><h3 class="mb-0 mt-2">{{ stats[k] }}</h3><small class="text-muted">{{ l }}</small></div></div>{% endfor %}</div>
+<div class="card p-3"><h5>Recent Transactions</h5><table class="table"><tr><th>Book</th><th>Student</th><th>Issued</th><th>Due</th><th>Status</th></tr>
+{% for t in recent %}<tr><td>{{t.title}}</td><td>{{t.student}}</td><td>{{t.issue_date}}</td><td>{{t.due_date}}</td><td>{% if t.return_date %}<span class="badge bg-success">Returned</span>{% elif t.overdue %}<span class="badge bg-danger">Overdue</span>{% else %}<span class="badge bg-primary">Issued</span>{% endif %}</td></tr>{% endfor %}</table></div>
+{% else %}<div class="row g-3 mb-4"><div class="col-md-4"><div class="card p-3"><h3>{{ mine|length }}</h3><small>Currently issued</small></div></div>
+<div class="col-md-4"><div class="card p-3"><h3>Rs. {{ fines }}</h3><small>Fines (incl. accruing)</small></div></div>
+<div class="col-md-4"><div class="card p-3"><h3>{{ count }}</h3><small>Total borrowings</small></div></div></div>
+<div class="card p-3"><h5>Return Deadlines</h5><table class="table"><tr><th>Book</th><th>Due</th><th>Fine</th></tr>
+{% for t in mine %}<tr><td>{{t.title}}</td><td>{{t.due_date}} {% if t.overdue %}<span class="badge bg-danger">Overdue</span>{% endif %}</td><td>Rs. {{t.fine}}</td></tr>{% else %}<tr><td colspan=3 class="text-muted">No books issued.</td></tr>{% endfor %}</table></div>{% endif %}
+{% endblock %}

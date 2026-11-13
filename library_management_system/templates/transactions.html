@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block content %}
+<div class="d-flex gap-2 mb-3">{% for f in ['all','active','overdue','returned'] %}<a class="btn btn-sm {{'btn-primary' if f==flt else 'btn-outline-primary'}}" href="?filter={{f}}">{{f|title}}</a>{% endfor %}</div>
+{% if user.role=='admin' %}<form class="card p-3 mb-3 row g-2 flex-row" method="post" action="{{ url_for('issue') }}"><div class="col-md-5"><select class="form-select" name="book_id" required><option value="">Select book</option>{% for b in books if b.available>0 %}<option value="{{b.id}}">{{b.title}} ({{b.available}})</option>{% endfor %}</select></div>
+<div class="col-md-5"><select class="form-select" name="student_id" required><option value="">Select student</option>{% for s in students %}<option value="{{s.id}}">{{s.name}} - {{s.roll_no}}</option>{% endfor %}</select></div><div class="col-md-2"><button class="btn btn-success w-100">Issue Book</button></div></form>{% endif %}
+<div class="card p-3"><table class="table"><tr><th>Book</th><th>Student</th><th>Issued</th><th>Due</th><th>Returned</th><th>Fine</th>{% if user.role=='admin' %}<th></th>{% endif %}</tr>
+{% for t in rows %}<tr class="{{'table-danger' if t.overdue}}"><td>{{t.title}}</td><td>{{t.student}}</td><td>{{t.issue_date}}</td><td>{{t.due_date}}</td><td>{{t.return_date or '-'}}</td><td>Rs. {{t.fine}}</td>
+{% if user.role=='admin' %}<td>{% if not t.return_date %}<form method="post" action="{{ url_for('return_',tid=t.id) }}" onsubmit="return confirm('Mark as returned?')"><button class="btn btn-sm btn-outline-success">Return</button></form>{% endif %}</td>{% endif %}</tr>
+{% else %}<tr><td colspan=7 class="text-muted">No records.</td></tr>{% endfor %}</table></div>{% endblock %}
